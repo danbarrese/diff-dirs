@@ -1,6 +1,7 @@
 # Author: Dan Barrese (danbarrese.com)
 # Date: Dec 28, 2013
 # Script Name: diff-dirs
+# Version: 1.01
 # Description: Compares two directories and shows any differences
 #              in the files/folders contained in those directories.
 #              This script is my first Python script, so there are several
@@ -15,8 +16,10 @@
 # * Reading file info
 # * Comparison of file hashes (using filecmp module)
 # * Command line interface (using argparse module)
-
-# TODO: don't use folder path to determine longest file name.  Just print out fold1 vs. fold2 above each list of files.
+#
+# Update History:
+# 2013.12.29 [DRB][1.0]    Initial implementation complete.
+# 2013.12.29 [DRB][1.01]   Cleaned up comments.
 
 import os
 import time
@@ -324,12 +327,6 @@ def print_file_diff(folder, file, other_file):
 ###############################################################################
 # MAIN
 ###############################################################################
-
-# Quick run
-#if args.path1 is None:
-    #args.path1 = ["/home/dan/temp/lsd/dir1"]
-#if args.path2 is None:
-    #args.path2 = ["/home/dan/temp/lsd/dir2"]
 
 path1 = args.path1[0]
 fold1 = read_dir(Folder(path1))
