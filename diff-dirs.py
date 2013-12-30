@@ -1,10 +1,9 @@
+# DIFF-DIRS
 # Author: Dan Barrese (danbarrese.com)
-# Date: Dec 28, 2013
-# Script Name: diff-dirs
 # Version: 1.01
 # Description: Compares two directories and shows any differences
 #              in the files/folders contained in those directories.
-#              This script is my first Python script, so there are several
+#              This script is my second Python script, so there are several
 #              places in the code that are mangled or hacked together.
 # Skills exemplified in this script:
 # * Classes
@@ -20,6 +19,7 @@
 # Update History:
 # 2013.12.29 [DRB][1.0]    Initial implementation complete.
 # 2013.12.29 [DRB][1.01]   Cleaned up comments.
+# 2013.12.29 [DRB][1.02]   Fixed typo.
 
 import os
 import time
