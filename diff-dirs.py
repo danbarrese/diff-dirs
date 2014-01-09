@@ -26,7 +26,7 @@ import time
 import argparse
 import filecmp
 
-parser = argparse.ArgumentParser(description='"LS" Diff')
+parser = argparse.ArgumentParser(description='diff-dirs: "diffs" file directories.')
 parser.add_argument('--path1', '-p1', metavar='P', type=str, nargs=1,
                     dest='path1', required=True,
                     help='The absolute path (P) to the first directory to compare.  (REQUIRED)')
@@ -39,12 +39,17 @@ parser.set_defaults(show_all_files=False)
 parser.add_argument('--show-dir-trees', '-t', dest='show_dir_trees', action='store_true',
                     help='shows tree structure of chosen directories')
 parser.set_defaults(show_dir_trees=False)
+parser.add_argument('--column-separator', '-s', metavar='S', type=str, nargs=1,
+                    dest='column_separator', required=False, default='   ',
+                    help='The output column separator.  Default is "   " spaces.')
 args = parser.parse_args()
+
+output_column_separator = args.column_separator
 
 class File:
     """Represents a file on the storage device."""
-    separator = "     "
-    alertlen = 4 # length of +/- alert strings defined in strcmp
+    alertlen = 3 # length of +/- alert strings defined in strcmp
+    separator = output_column_separator.ljust(len(output_column_separator)+alertlen)
 
     def __init__(self, full_path="NA", size="NA", date_modified=None):
         self.full_path = full_path.strip()
@@ -58,9 +63,10 @@ class File:
     def str(self, indent=""):
         ret = indent
         ret += self.full_path.ljust(Folder.longest_filename)
-        ret += File.separator
+        ret += output_column_separator
         ret += str(self.size).rjust(Folder.longest_size)
-        ret += File.separator
+        ret += ''.ljust(File.alertlen)
+        ret += output_column_separator
         if self.date_modified is None:
             ret += "NA".ljust(Folder.longest_date_modified)
         else:
@@ -69,25 +75,25 @@ class File:
 
     def strcmp(self, other_file):
         ret = self.full_path.ljust(Folder.longest_filename)
-        ret += File.separator
+        ret += output_column_separator
         ret += str(self.size).rjust(Folder.longest_size)
         if self.size > other_file.size:
-            ret += "(+) "
+            ret += "(+)"
         elif self.size < other_file.size:
-            ret += "(-) "
+            ret += "(-)"
         else:
-            ret += "    "
-        ret += File.separator[File.alertlen:]
+            ret += ''.ljust(File.alertlen)
+        ret += output_column_separator
         if self.date_modified is None:
-            ret += "n/a".ljust(Folder.longest_date_modified)
+            ret += "NA".ljust(Folder.longest_date_modified)
         else:
             ret += time.asctime(self.date_modified).ljust(Folder.longest_date_modified)
             if self.date_modified > other_file.date_modified:
-                ret += "(+) "
+                ret += "(+)"
             elif self.date_modified < other_file.date_modified:
-                ret += "(-) "
+                ret += "(-)"
             else:
-                ret += "    "
+                ret += ''.ljust(File.alertlen)
         return ret
 
     def __eq__(self, other):
@@ -111,12 +117,12 @@ class Folder:
     longest_size = 0
     longest_date_modified = 0
     show_info_with_no_diff = args.show_all_files
-    separator                = "      "
-    separator_no_match       = " < >  "
-    separator_diff_file_info = " <~>  "
-    separator_exact          = " <=>  "
-    separator_diff_hashes    = " <!>  "
-    separator_diff_mdates    = " <@>  "
+    separator                = output_column_separator + "   " + output_column_separator
+    separator_no_match       = output_column_separator + "< >" + output_column_separator
+    separator_diff_file_info = output_column_separator + "<~>" + output_column_separator
+    separator_exact          = output_column_separator + "<=>" + output_column_separator
+    separator_diff_hashes    = output_column_separator + "<!>" + output_column_separator
+    separator_diff_mdates    = output_column_separator + "<@>" + output_column_separator
 
     def __init__(self, full_path):
         self.full_path = full_path.strip()
