@@ -1,6 +1,5 @@
 # DIFF-DIRS
 # Author: Dan Barrese (danbarrese.com)
-# Version: 1.01
 # Description: Compares two directories and shows any differences
 #              in the files/folders contained in those directories.
 #              This script is my second Python script, so there are several
@@ -20,11 +19,13 @@
 # 2013.12.29 [DRB][1.0]    Initial implementation complete.
 # 2013.12.29 [DRB][1.01]   Cleaned up comments.
 # 2013.12.29 [DRB][1.02]   Fixed typo.
+# 2015.05.05 [DRB]         Branched for Python2.
 
 import os
 import time
 import argparse
 import filecmp
+import sys
 
 parser = argparse.ArgumentParser(description='diff-dirs: "diffs" file directories.')
 parser.add_argument('--path1', '-p1', metavar='P', type=str, nargs=1,
@@ -209,9 +210,9 @@ class Folder:
                 if not other_folder.header_printed:
                     #print(other_folder.header)
                     other_folder.header_printed = True
-                print(File().str(), end="")
-                print(''.ljust(File.alertlen) + Folder.separator_no_match, end="")
-                print(file.str())
+                sys.stdout.write(File().str())
+                sys.stdout.write(''.ljust(File.alertlen) + Folder.separator_no_match)
+                print file.str()
 
     def __process_subfolders_rtl(self, other_folder):
         if other_folder.folders is not None:
@@ -328,7 +329,7 @@ def print_file_diff(folder, file, other_file):
         if not folder.header_printed:
             #print(folder.header)
             folder.header_printed = True
-        print(diffstr)
+        print diffstr
 
 ###############################################################################
 # MAIN
@@ -340,16 +341,16 @@ path2 = args.path2[0]
 fold2 = read_dir(Folder(path2))
 
 if args.show_dir_trees:
-    print(fold1.str())
-    print(fold2.str())
-    print()
+    print fold1.str()
+    print fold2.str()
+    print
 
-print("Legend:")
-print("< > means there was no matching file found on the other folder.")
-print("<~> means the file info is different (i.e. mismatched file size).")
-print("<=> means the files are equal by file info and by hash.")
-print("<!> means the files are equal by file info but their hashes differ.")
-print("<@> means the files are equal by hashes and file size but have different modification dates.")
-print()
+print "Legend:"
+print "< > means there was no matching file found on the other folder."
+print "<~> means the file info is different (i.e. mismatched file size)."
+print "<=> means the files are equal by file info and by hash."
+print "<!> means the files are equal by file info but their hashes differ."
+print "<@> means the files are equal by hashes and file size but have different modification dates."
+print ""
 
 fold1.compare_to(fold2)
